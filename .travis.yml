@@ -1,0 +1,62 @@
+# This Source Code Form is licensed MPLv2: http://mozilla.org/MPL/2.0
+#
+# http://docs.travis-ci.com/user/customizing-the-build/
+# http://lint.travis-ci.org/
+
+#language: cpp
+
+os:
+  - linux
+
+dist: trusty
+
+compiler:
+  - gcc
+  #- clang
+
+matrix:
+  fast_finish: true
+
+sudo: false   # http://docs.travis-ci.com/user/workers/container-based-infrastructure/
+#sudo: required # needed for apt-get
+
+addons:
+  apt:
+    sources: # https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+      - ubuntu-toolchain-r-test
+    packages: [
+      # g++ >= 4.8 is required for -std=c++11
+      # gcc-5, g++-5,
+      ]
+
+before_install:
+  - uname -a
+  - cat /etc/lsb-release
+  - pwd
+  - free -tm
+  - df -h
+  - make --version
+  - autoconf --version
+  - automake --version
+  - python --version
+  - flex --version
+  - bison --version
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  #- $CC --version
+  - dpkg --get-selections
+
+install:
+  - git clean -f
+
+before_script:
+  - true # make
+
+script:
+  - true # make check
+
+after_success:
+  - echo "Done, build OK!"
+
+notifications:
+  irc: false
+  email: false
