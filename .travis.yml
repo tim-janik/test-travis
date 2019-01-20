@@ -5,20 +5,20 @@
 
 #language: cpp
 
-os:
-  - linux
-
-dist: trusty
-
+os: linux
+dist: xenial
+services: docker
+sudo: false   # http://docs.travis-ci.com/user/workers/container-based-infrastructure/ (required: needed for apt-get)
 compiler:
   - gcc
-  #- clang
+  - clang
+
+cache:
+  directories:
+    - /var/lib/docker
 
 matrix:
   fast_finish: true
-
-sudo: false   # http://docs.travis-ci.com/user/workers/container-based-infrastructure/
-#sudo: required # needed for apt-get
 
 addons:
   apt:
@@ -30,11 +30,6 @@ addons:
       ]
 
 before_install:
-  - true &&
-    export A=a &&
-    export B=b &&
-    export C=c &&
-    echo $A $B $C
   - uname -a
   - cat /etc/lsb-release
   - pwd
@@ -47,8 +42,7 @@ before_install:
   - python --version
   - flex --version
   - bison --version
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-  #- $CC --version
+  - time docker pull 'timjanik/ci-cache:bionic-180930' || true
   - dpkg --get-selections
 
 install:
@@ -65,11 +59,11 @@ after_success:
 
 jobs:
     include:
-    - stage: test
+    - stage: Test1
       script: echo test1
-    - # stage name not required, will continue to use `test`
+    - stage: Test2
       script: echo test2
-    - stage: deploy
+    - stage: Deploy
       script: echo deploy
 
 notifications:
