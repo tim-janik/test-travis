@@ -7,6 +7,7 @@
 
 os: linux
 dist: xenial
+language: generic
 services: docker
 sudo: false   # http://docs.travis-ci.com/user/workers/container-based-infrastructure/ (required: needed for apt-get)
 compiler:
@@ -15,7 +16,7 @@ compiler:
 
 cache:
   directories:
-    - /var/lib/docker
+    - ~/cache/
 
 matrix:
   fast_finish: true
@@ -29,21 +30,6 @@ addons:
       # gcc-5, g++-5,
       ]
 
-before_install:
-  - uname -a
-  - cat /etc/lsb-release
-  - pwd
-  - free -tm
-  - df -h
-  - docker --version
-  - make --version
-  - autoconf --version
-  - automake --version
-  - python --version
-  - flex --version
-  - bison --version
-  - time docker pull 'timjanik/ci-cache:bionic-180930' || true
-  - dpkg --get-selections
 
 install:
   - git clean -f
@@ -59,12 +45,42 @@ after_success:
 
 jobs:
     include:
-    - stage: Test1
-      script: echo test1
+    - stage: PrepareCI
+      before_install:
+        - uname -a
+        - cat /etc/lsb-release
+        - pwd
+        - free -tm
+        - df -h
+        - docker --version
+        - make --version
+        - autoconf --version
+        - automake --version
+        - python --version
+        - flex --version
+        - bison --version
+        - dpkg --get-selections
+      install:
+        - ls -al ~/cache/ || true
+        - mkdir -p ~/cache/
+        - find ~/cache/ -type f -mtime +1 -delete
+      script:
+        - time DIMG='timjanik/ci-cache:bionic-180930' &&
+          docker pull $DIMG &&
+          docker tag $DIMG $TRAVIS_COMMIT
+        - time docker save $TRAVIS_COMMIT |
+          bzip2 -9 > ~/cache/dimg-$TRAVIS_COMMIT.tbz
     - stage: Test2
-      script: echo test2
+      script:
+        - echo test2
+        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tbz
+        - time docker pull $TRAVIS_COMMIT
     - stage: Deploy
-      script: echo deploy
+      install:
+        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tbz
+      script:
+        - echo deploy
+        - time docker pull $TRAVIS_COMMIT
 
 notifications:
   irc: false
