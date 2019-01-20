@@ -63,6 +63,15 @@ script:
 after_success:
   - echo "Done, build OK!"
 
+jobs:
+    include:
+    - stage: test
+      script: echo test1
+    - # stage name not required, will continue to use `test`
+      script: echo test2
+    - stage: deploy
+      script: echo deploy
+
 notifications:
   irc: false
   email: false
