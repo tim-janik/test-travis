@@ -30,6 +30,9 @@ addons:
       # gcc-5, g++-5,
       ]
 
+env:
+  global:
+    - DOCIC='timjanik/ci-cache:bionic-180930'
 
 install:
   - git clean -f
@@ -63,24 +66,22 @@ jobs:
       install:
         - ls -al ~/cache/ || true
         - mkdir -p ~/cache/
-        - find ~/cache/ -type f -mtime +1 -delete
+        - find ~/cache/ -type f -mtime +1 -delete -print
       script:
-        - DIMG='timjanik/ci-cache:bionic-180930' &&
-          time docker pull $DIMG &&
-          docker tag $DIMG $TRAVIS_COMMIT
-        - time docker save $TRAVIS_COMMIT |
-          gzip -2 > ~/cache/dimg-$TRAVIS_COMMIT.tgz
+        - time docker pull $DOCIC
+        - time docker save $DOCIC |
+          gzip -2 > ~/cache/docic-$TRAVIS_COMMIT.tgz
     - stage: Test2
       script:
         - echo test2
-        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tgz
-        - time docker pull $TRAVIS_COMMIT
+        - time docker load -i ~/cache/docic-$TRAVIS_COMMIT.tgz
+        - time docker pull $DOCIC
     - stage: Deploy
       install:
-        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tgz
+        - time docker load -i ~/cache/docic-$TRAVIS_COMMIT.tgz
       script:
         - echo deploy
-        - time docker pull $TRAVIS_COMMIT
+        - time docker pull $DOCIC
 
 notifications:
   irc: false
