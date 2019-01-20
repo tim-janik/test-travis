@@ -65,19 +65,19 @@ jobs:
         - mkdir -p ~/cache/
         - find ~/cache/ -type f -mtime +1 -delete
       script:
-        - time DIMG='timjanik/ci-cache:bionic-180930' &&
-          docker pull $DIMG &&
+        - DIMG='timjanik/ci-cache:bionic-180930' &&
+          time docker pull $DIMG &&
           docker tag $DIMG $TRAVIS_COMMIT
         - time docker save $TRAVIS_COMMIT |
-          bzip2 -9 > ~/cache/dimg-$TRAVIS_COMMIT.tbz
+          gzip -2 > ~/cache/dimg-$TRAVIS_COMMIT.tgz
     - stage: Test2
       script:
         - echo test2
-        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tbz
+        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tgz
         - time docker pull $TRAVIS_COMMIT
     - stage: Deploy
       install:
-        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tbz
+        - time docker load -i ~/cache/dimg-$TRAVIS_COMMIT.tgz
       script:
         - echo deploy
         - time docker pull $TRAVIS_COMMIT
