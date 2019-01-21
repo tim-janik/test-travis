@@ -16,6 +16,7 @@ compiler:
 
 cache:
   directories:
+    - /var/lib/docker/
     - ~/cache/
 
 matrix:
@@ -69,16 +70,11 @@ jobs:
         - find ~/cache/ -type f -mtime +1 -delete -print
       script:
         - time docker pull $DOCIC
-        - time docker save $DOCIC |
-          gzip -2 > ~/cache/docic-$TRAVIS_COMMIT.tgz
     - stage: Test2
       script:
         - echo test2
-        - time docker load -i ~/cache/docic-$TRAVIS_COMMIT.tgz
         - time docker pull $DOCIC
     - stage: Deploy
-      install:
-        - time docker load -i ~/cache/docic-$TRAVIS_COMMIT.tgz
       script:
         - echo deploy
         - time docker pull $DOCIC
