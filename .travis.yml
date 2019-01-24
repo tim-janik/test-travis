@@ -50,6 +50,7 @@ after_success:
 jobs:
     include:
     - stage: PrepareCI
+      env: FOO=foo
       before_install:
         - uname -a
         - cat /etc/lsb-release
@@ -65,18 +66,23 @@ jobs:
         - bison --version
         - dpkg --get-selections
       install:
-        - ls -al ~/cache/ || true
+        - touch ~/cache/stage1foo
+        - ls -al ~/cache/
         - mkdir -p ~/cache/
         - find ~/cache/ -type f -mtime +1 -delete -print
       script:
         - time docker pull $DOCIC
     - stage: Test2
+      env: FOO=foo
       script:
         - echo test2
+        - ls -al ~/cache/
         - time docker pull $DOCIC
     - stage: Deploy
+      env: BAR=bar
       script:
         - echo deploy
+        - ls -al ~/cache/
         - time docker pull $DOCIC
 
 notifications:
