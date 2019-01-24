@@ -34,9 +34,6 @@ env:
   global:
     - DOCIC='timjanik/ci-cache:bionic-180930'
 
-after_success:
-  - echo "Done, exit OK!"
-
 jobs:
     include:
 
@@ -44,8 +41,8 @@ jobs:
       env: FLOW=clang
       before_install:
         - uname -a && cat /etc/lsb-release && pwd && free -tm && echo nproc=`nproc` && df -h
-        - rm -rf -v ~/cache/*
-        - touch ~/cache/Build-Tree-$FLOW && ls -al ~/cache/
+        - rm -v -rf ~/cache/*
+        - touch ~/cache/Build-Tree-$FLOW && ls -l ~/cache/
         - cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
       script:
         - pwd
@@ -56,7 +53,7 @@ jobs:
     - stage: Check-Build
       env: FLOW=clang
       before_install:
-        - touch ~/cache/Check-Build-$FLOW && ls -al ~/cache/
+        - touch ~/cache/Check-Build-$FLOW && ls -l ~/cache/
         - mv -v ~/cache/beast/ ~ && cd ~/beast/
       script:
         - pwd
@@ -65,10 +62,10 @@ jobs:
     - stage: Deploy
       env: FLOW=barzonk
       install:
-        - touch ~/cache/Deploy-$FLOW && ls -al ~/cache/
+        - touch ~/cache/Deploy-$FLOW && ls -l ~/cache/
       script:
         - echo Deploy and upload...
-        - ls -al ~/cache/
+        - ls -l ~/cache/
 
 notifications:
   irc: false
