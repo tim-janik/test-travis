@@ -48,7 +48,7 @@ jobs:
         - cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
       script:
         - pwd
-        - ./autogen.sh --prefix=/usr CC=clang CXX=clang++
+        - echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
       before_cache:
         - cd ~/cache/ && mv -v ~/beast/ .
 
@@ -59,7 +59,7 @@ jobs:
         - mv -v ~/cache/beast/ . && cd beast/
       script:
         - pwd
-        - egrep ^CXX Makefile
+        - egrep clang TEST
 
     - stage: Deploy
       env: FLOW=barzonk
