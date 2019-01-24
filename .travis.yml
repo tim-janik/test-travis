@@ -16,7 +16,6 @@ compiler:
 
 cache:
   directories:
-    - /var/lib/docker/
     - ~/cache/
 
 matrix:
@@ -35,55 +34,40 @@ env:
   global:
     - DOCIC='timjanik/ci-cache:bionic-180930'
 
-install:
-  - git clean -f
-
-before_script:
-  - true # make
-
-script:
-  - true # make check
-
 after_success:
-  - echo "Done, build OK!"
+  - echo "Done, exit OK!"
 
 jobs:
     include:
-    - stage: PrepareCI
-      env: FOO=foo
+
+    - stage: Build-Tree
+      env: FLOW=clang
       before_install:
-        - uname -a
-        - cat /etc/lsb-release
+        - uname -a && cat /etc/lsb-release && pwd && free -tm && echo nproc=`nproc` && df -h
+        - touch ~/cache/Build-Tree-$FLOW && ls -al ~/cache/
+        - cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
+      script:
         - pwd
-        - free -tm
-        - df -h
-        - docker --version
-        - make --version
-        - autoconf --version
-        - automake --version
-        - python --version
-        - flex --version
-        - bison --version
-        - dpkg --get-selections
-      install:
-        - touch ~/cache/stage1foo
-        - ls -al ~/cache/
-        - mkdir -p ~/cache/
-        - find ~/cache/ -type f -mtime +1 -delete -print
+        - ./autogen.sh --prefix=/usr CC=clang CXX=clang++
+      before_cache:
+        - cd ~/cache/ && mv -v ~/beast/ .
+
+    - stage: Check-Build
+      env: FLOW=clang
+      before_install:
+        - touch ~/cache/Check-Build-$FLOW && ls -al ~/cache/
+        - mv -v ~/cache/beast/ . && cd beast/
       script:
-        - time docker pull $DOCIC
-    - stage: Test2
-      env: FOO=foo
-      script:
-        - echo test2
-        - ls -al ~/cache/
-        - time docker pull $DOCIC
+        - pwd
+        - egrep ^CXX Makefile
+
     - stage: Deploy
-      env: BAR=bar
+      env: FLOW=barzonk
+      install:
+        - touch ~/cache/Deploy-$FLOW && ls -al ~/cache/
       script:
-        - echo deploy
+        - echo Deploy and upload...
         - ls -al ~/cache/
-        - time docker pull $DOCIC
 
 notifications:
   irc: false
