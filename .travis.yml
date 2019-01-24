@@ -44,6 +44,7 @@ jobs:
       env: FLOW=clang
       before_install:
         - uname -a && cat /etc/lsb-release && pwd && free -tm && echo nproc=`nproc` && df -h
+        - rm -rf -v ~/cache/*
         - touch ~/cache/Build-Tree-$FLOW && ls -al ~/cache/
         - cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
       script:
@@ -56,7 +57,7 @@ jobs:
       env: FLOW=clang
       before_install:
         - touch ~/cache/Check-Build-$FLOW && ls -al ~/cache/
-        - mv -v ~/cache/beast/ . && cd beast/
+        - mv -v ~/cache/beast/ ~ && cd ~/beast/
       script:
         - pwd
         - egrep clang TEST
