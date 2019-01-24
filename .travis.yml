@@ -15,16 +15,16 @@ jobs:
 
     - stage: Stage1
       env: WORKFLOW=clang
-      before_install:
-        - uname -a && cat /etc/lsb-release && pwd && free -tm && echo nproc=`nproc` && df -h
-        - rm -v -rf ~/cache/*
-        - touch ~/cache/Stage1-$WORKFLOW && ls -l ~/cache/
-        - cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
-      script:
-        - pwd
-        - echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
-      before_cache:
-        - cd ~/cache/ && mv -v ~/beast/ .
+      before_install: |
+        uname -a && pwd && echo nproc=`nproc` &&
+        rm -v -rf ~/cache/* &&
+        touch ~/cache/Stage1-$WORKFLOW && ls -l ~/cache/ &&
+        cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
+      script: |
+        pwd &&
+        echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
+      before_cache: >
+        cd ~/cache/ && mv -v ~/beast/ .
 
     - stage: Stage2
       env: WORKFLOW=clang
