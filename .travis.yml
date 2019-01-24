@@ -5,44 +5,20 @@
 
 #language: cpp
 
-os: linux
-dist: xenial
+os:       linux
+dist:     xenial
 language: generic
 services: docker
-sudo: false   # http://docs.travis-ci.com/user/workers/container-based-infrastructure/ (required: needed for apt-get)
-compiler:
-  - gcc
-  - clang
-
-cache:
-  directories:
-    - ~/cache/
-
-matrix:
-  fast_finish: true
-
-addons:
-  apt:
-    sources: # https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
-      - ubuntu-toolchain-r-test
-    packages: [
-      # g++ >= 4.8 is required for -std=c++11
-      # gcc-5, g++-5,
-      ]
-
-env:
-  global:
-    - DOCIC='timjanik/ci-cache:bionic-180930'
 
 jobs:
-    include:
+  include:
 
-    - stage: Build-Tree
-      env: FLOW=clang
+    - stage: Stage1
+      env: WORKFLOW=clang
       before_install:
         - uname -a && cat /etc/lsb-release && pwd && free -tm && echo nproc=`nproc` && df -h
         - rm -v -rf ~/cache/*
-        - touch ~/cache/Build-Tree-$FLOW && ls -l ~/cache/
+        - touch ~/cache/Stage1-$WORKFLOW && ls -l ~/cache/
         - cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
       script:
         - pwd
@@ -50,22 +26,26 @@ jobs:
       before_cache:
         - cd ~/cache/ && mv -v ~/beast/ .
 
-    - stage: Check-Build
-      env: FLOW=clang
+    - stage: Stage2
+      env: WORKFLOW=clang
       before_install:
-        - touch ~/cache/Check-Build-$FLOW && ls -l ~/cache/
+        - touch ~/cache/Stage2-$WORKFLOW && ls -l ~/cache/
         - mv -v ~/cache/beast/ ~ && cd ~/beast/
       script:
         - pwd
         - egrep clang TEST
 
-    - stage: Deploy
-      env: FLOW=barzonk
+    - stage: Stage1
+      env: WORKFLOW=barzonk
       install:
-        - touch ~/cache/Deploy-$FLOW && ls -l ~/cache/
+        - touch ~/cache/Deploy-$WORKFLOW && ls -l ~/cache/
       script:
         - echo Deploy and upload...
         - ls -l ~/cache/
+
+cache:
+  directories:
+    - ~/cache/
 
 notifications:
   irc: false
