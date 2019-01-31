@@ -15,7 +15,7 @@ jobs:
 
     - stage: Stage1
       env: PIPELINE=clang
-      name: clang-1
+      name: " clang-1 (extra characters) / more text"
       before_install: |
         uname -a && pwd && echo nproc=`nproc` &&
         rm -v -rf ~/cache/* &&
@@ -28,7 +28,7 @@ jobs:
         cd ~/cache/ && mv -v ~/beast/ .
 
     - stage: Stage2
-      name: clang-2
+      name: clang-2 with extra info
       env: PIPELINE=clang
       before_install:
         - touch ~/cache/Stage2-$PIPELINE && ls -l ~/cache/
@@ -44,7 +44,7 @@ jobs:
       script:
         - echo Deploy and upload...
         - ls -l ~/cache/
-      name: barzonk-1
+      name: Barzonk-1 # comments after name
 
 cache:
   directories:
