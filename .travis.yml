@@ -17,10 +17,9 @@ jobs:
       env: PIPELINE=clang
       name: " clang-1 (extra characters) / more text"
       before_install: |
-        uname -a && pwd && echo nproc=`nproc` &&
-        rm -v -rf ~/cache/* &&
-        touch ~/cache/Stage1-$PIPELINE && ls -l ~/cache/ &&
-        cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git && cd beast
+        uname -a && pwd && echo nproc=`nproc` && rm -v -rf ~/cache/* &&
+        cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git &&
+        touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
       script: |
         pwd &&
         echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
@@ -30,17 +29,17 @@ jobs:
     - stage: Stage2
       name: clang-2 with extra info
       env: PIPELINE=clang
-      before_install:
-        - touch ~/cache/Stage2-$PIPELINE && ls -l ~/cache/
-        - mv -v ~/cache/beast/ ~ && cd ~/beast/
+      before_install: |
+        mv -v ~/cache/beast/ ~ && cd ~/beast/ &&
+        touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
       script:
         - pwd
         - egrep clang TEST
 
     - stage: Stage1
       env: PIPELINE=barzonk
-      install:
-        - touch ~/cache/Deploy-$PIPELINE && ls -l ~/cache/
+      before_install: |
+        touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
       script:
         - echo Deploy and upload...
         - ls -l ~/cache/
