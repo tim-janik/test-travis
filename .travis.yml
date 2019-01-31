@@ -10,6 +10,9 @@ dist:     xenial
 language: generic
 services: docker
 
+install: |
+  touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
+
 jobs:
   include:
 
@@ -18,8 +21,7 @@ jobs:
       name: " clang-1 (extra characters) / more text"
       before_install: |
         uname -a && pwd && echo nproc=`nproc` && rm -v -rf ~/cache/* &&
-        cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git &&
-        touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
+        cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git
       script: |
         pwd &&
         echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
@@ -28,10 +30,9 @@ jobs:
 
     - stage: Stage2
       env: PIPELINE=clang
-      name: $PIPELINE-2 with extra info
+      name: Job name with extra info
       before_install: |
-        mv -v ~/cache/beast/ ~ && cd ~/beast/ &&
-        touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
+        mv -v ~/cache/beast/ ~ && cd ~/beast/
       script:
         - pwd
         - egrep clang TEST
@@ -39,11 +40,11 @@ jobs:
     - stage: Stage1
       env: PIPELINE=barzonk
       before_install: |
-        touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/
+        mkdir ~/beast
       script:
         - echo Deploy and upload...
         - ls -l ~/cache/
-      name: Barzonk-1 $PIPELINE # comments after name
+      name: Barzonk-1   # comments after name
 
 cache:
   directories:
