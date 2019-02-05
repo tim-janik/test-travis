@@ -11,7 +11,9 @@ language: generic
 services: docker
 
 install: |
-  touch ~/cache/"$PIPELINE-$TRAVIS_BUILD_STAGE_NAME" && ls -l ~/cache/ && cd ~/beast/
+  touch "~/cache/stamp-$TRAVIS_BUILD_ID-$TRAVIS_BUILD_NUMBER-git$TRAVIS_COMMIT-$TRAVIS_JOB_ID-$TRAVIS_JOB_NUMBER" && ls -l ~/cache/
+before_cache: |
+  (cd ~/cache/ && pwd && ls -l)
 
 jobs:
   include:
@@ -19,31 +21,21 @@ jobs:
     - stage: Stage1
       env: PIPELINE=clang
       name: " clang-1 (extra characters) / more text"
-      before_install: |
-        uname -a && pwd && echo nproc=`nproc` && rm -v -rf ~/cache/* &&
-        cd ~ && git clone --branch=master https://github.com/tim-janik/beast.git
       script: |
         pwd &&
         echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
-      before_cache: >
-        cd ~/cache/ && mv -v ~/beast/ .
 
     - stage: Stage2
       env: PIPELINE=clang
       name: Job name with extra info
-      before_install: |
-        mv -v ~/cache/beast/ ~ && cd ~/beast/
-      script:
-        - pwd
-        - egrep clang TEST
+      script: |
+        pwd &&
+        egrep clang TEST
 
     - stage: Stage1
       env: PIPELINE=barzonk
-      before_install: |
-        mkdir ~/beast
-      script:
-        - echo Deploy and upload...
-        - ls -l ~/cache/
+      script: |
+        echo Deploy and upload...
       name: Barzonk-1   # comments after name
 
 cache:
