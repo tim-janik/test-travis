@@ -1,6 +1,7 @@
 # This Source Code Form is licensed MPL-2.0: http://mozilla.org/MPL/2.0
 #
 # http://docs.travis-ci.com/user/customizing-the-build/
+# http://docs.travis-ci.com/user/job-lifecycle
 # http://lint.travis-ci.org/
 
 os:       linux
