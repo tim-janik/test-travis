@@ -11,7 +11,7 @@ services: docker
 
 before_install: |
   mkdir -p ~/cache/ &&
-  touch ~/"cache/stamp-$TRAVIS_BUILD_ID-$TRAVIS_BUILD_NUMBER-git$TRAVIS_COMMIT-$TRAVIS_JOB_ID-$TRAVIS_JOB_NUMBER" &&
+  touch ~/cache/"stamp-$TRAVIS_BUILD_ID-$TRAVIS_BUILD_NUMBER-git$TRAVIS_COMMIT-$TRAVIS_JOB_ID-$TRAVIS_JOB_NUMBER" &&
   ls -l ~/cache/
 before_cache: |
   (cd ~/cache/ && pwd && ls -l)
@@ -21,7 +21,7 @@ jobs:
 
     - stage: Stage1
       env: PIPELINE=clang ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
-      name: " clang-1 (extra characters) / more text"
+      name: "Clang-1 (extra characters) / more text"
       script: |
         pwd &&
         echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >~/cache/TEST
