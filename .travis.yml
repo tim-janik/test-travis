@@ -24,14 +24,14 @@ jobs:
       name: " clang-1 (extra characters) / more text"
       script: |
         pwd &&
-        echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >TEST
+        echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >~/cache/TEST
 
     - stage: Stage2
       env: PIPELINE=clang
       name: Job name with extra info
       script: |
         pwd &&
-        egrep clang TEST
+        egrep clang ~/cache/TEST
 
     - stage: Stage1
       env: PIPELINE=barzonk
