@@ -10,7 +10,7 @@ services: docker
 
 before_install: |
   mkdir -p ~/cache/ &&
-  touch "~/cache/stamp-$TRAVIS_BUILD_ID-$TRAVIS_BUILD_NUMBER-git$TRAVIS_COMMIT-$TRAVIS_JOB_ID-$TRAVIS_JOB_NUMBER" &&
+  touch ~/"cache/stamp-$TRAVIS_BUILD_ID-$TRAVIS_BUILD_NUMBER-git$TRAVIS_COMMIT-$TRAVIS_JOB_ID-$TRAVIS_JOB_NUMBER" &&
   ls -l ~/cache/
 before_cache: |
   (cd ~/cache/ && pwd && ls -l)
