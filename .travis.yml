@@ -20,21 +20,21 @@ jobs:
   include:
 
     - stage: Stage1
-      env: PIPELINE=clang
+      env: PIPELINE=clang ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       name: " clang-1 (extra characters) / more text"
       script: |
         pwd &&
         echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >~/cache/TEST
 
     - stage: Stage2
-      env: PIPELINE=clang
+      env: PIPELINE=clang ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       name: Job name with extra info
       script: |
         pwd &&
         egrep clang ~/cache/TEST
 
     - stage: Stage1
-      env: PIPELINE=barzonk
+      env: PIPELINE=barzonk ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       script: |
         echo Deploy and upload...
       name: Barzonk-1   # comments after name
@@ -42,9 +42,6 @@ jobs:
 cache:
   directories:
     - ~/cache/
-env:
-  global:
-    - ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER        # Start clean cache with every new biuld / commit
 
 notifications:
   irc: false
