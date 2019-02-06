@@ -32,12 +32,23 @@ jobs:
       script: |
         pwd &&
         egrep clang ~/cache/TEST
+      before_cache: |
+        mkdir -p ~/cache/$TRAVIS_BUILD_NUMBER/ &&
+        find ~/cache/ -mindepth 1 -maxdepth 1 -mtime +1 -print0 | xargs -0 rm -v -fr &&
+        cd ~ && touch binary && mv ~/binary ~/cache/$TRAVIS_BUILD_NUMBER/ &&
+        (cd ~/cache/ && pwd && ls -al )
 
     - stage: Stage1
       env: PIPELINE=barzonk ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       script: |
         echo Deploy and upload...
       name: Barzonk-1   # comments after name
+      before_cache: |
+        mkdir -p ~/cache/$TRAVIS_BUILD_NUMBER/ &&
+        find ~/cache/ -mindepth 1 -maxdepth 1 -mtime +1 -print0 | xargs -0 rm -v -fr &&
+        cd ~ && touch binary && mv ~/binary ~/cache/$TRAVIS_BUILD_NUMBER/ &&
+        (cd ~/cache/ && pwd && ls -al )
+
 
 cache:
   directories:
