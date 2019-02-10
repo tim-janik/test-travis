@@ -1,2 +1,3 @@
-.export-refs export-subst ident
+\.export-refs export-subst ident
+\.gitattributes export-ignore
 
