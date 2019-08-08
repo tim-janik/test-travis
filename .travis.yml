@@ -10,11 +10,13 @@ language: generic
 services: docker
 
 before_install: |
-  mkdir -p ~/cache/ &&
-  touch ~/cache/"stamp-$TRAVIS_BUILD_ID-$TRAVIS_BUILD_NUMBER-git$TRAVIS_COMMIT-$TRAVIS_JOB_ID-$TRAVIS_JOB_NUMBER" &&
-  ls -l ~/cache/
+  echo global before_install
+  test  "$TRAVIS_BRANCH^$TRAVIS_PULL_REQUEST" != "master^false" -o \
+        -z "$BINTRAY_API_KEY" || echo "$BINTRAY_API_KEY" > .bintray_api_key
+
 before_cache: |
-  (cd ~/cache/ && pwd && ls -l)
+  echo global before_cache: ls -al
+  ls -al
 
 jobs:
   include:
@@ -22,6 +24,8 @@ jobs:
     - stage: Stage1
       env: PIPELINE=clang ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       name: "Clang-1 (extra characters) / more text"
+      before_install: |
+        echo Stage1 Clang-1 before_install
       script: |
         pwd &&
         echo './autogen.sh --prefix=/usr CC=clang CXX=clang++' >~/cache/TEST
@@ -29,6 +33,8 @@ jobs:
     - stage: Stage2
       env: PIPELINE=clang ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       name: Job name with extra info
+      before_install: |
+        echo Stage2 before_install
       script: |
         pwd &&
         egrep clang ~/cache/TEST
@@ -42,6 +48,8 @@ jobs:
       env: PIPELINE=barzonk ISOLATE_CACHE=$TRAVIS_BUILD_NUMBER
       script: |
         echo Deploy and upload...
+      before_install: |
+        echo Stage1Barzonk-1 before_install
       name: Barzonk-1   # comments after name
       before_cache: |
         mkdir -p ~/cache/$TRAVIS_BUILD_NUMBER/ &&
