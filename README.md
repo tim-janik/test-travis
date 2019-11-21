@@ -1,2 +1,2 @@
-# test-travis
-Repository to test travis commands - beware of non-linear history
+# gh-testing
+Repository for CI and GH/Travis integration testing - beware of non-linear history 
