@@ -1,0 +1,20 @@
+on: # on: [push]
+  push:
+    branches:    
+      - master         # Push events on master branch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Run a one-line script
+      run: echo Hello, world!
+    - name: Run a multi-line script
+      run: |
+        echo From README.md
+        head README.md
+        cat /etc/os-release
