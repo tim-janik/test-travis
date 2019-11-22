@@ -13,8 +13,8 @@ jobs:
       with:
         repository: tim-janik/beast
         ref: refs/heads/master
-    - run: pwd
-    - run: ls -l
-    - run: find / -name bse
-    #    ./version.sh
-    #    misc/cibuild.sh quick all check
+    - run: |
+        pwd
+        cd ../beast
+        ./version.sh
+        misc/cibuild.sh quick all check
