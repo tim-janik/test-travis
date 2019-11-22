@@ -15,6 +15,6 @@ jobs:
         ref: refs/heads/master
     - run: |
         pwd
-        ls -l ./version.sh
+        ls -l
         ./version.sh
         misc/cibuild.sh quick all check
