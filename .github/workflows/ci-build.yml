@@ -17,4 +17,5 @@ jobs:
         pwd
         cd ../beast
         ./version.sh
+        sed 's/ -ti/ -t/' -i misc/cibuild.sh 
         misc/cibuild.sh quick all check
