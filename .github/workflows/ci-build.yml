@@ -12,6 +12,7 @@ jobs:
     - uses: actions/checkout@master
       with:
         repository: tim-janik/beast
+        ref: refs/heads/master
     - run: |
         pwd
         ls -l ./version.sh
